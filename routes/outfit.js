@@ -45,8 +45,13 @@ router.post(
 
 // 📥 OBTENER OUTFITS
 router.get("/", auth, async (req, res) => {
-  const outfits = await Outfit.find({ user: req.userId });
-  res.json(outfits);
+  try {
+    const outfits = await Outfit.find({ user: req.userId });
+    res.json(outfits);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching outfits" });
+  }
 });
 
 module.exports = router;

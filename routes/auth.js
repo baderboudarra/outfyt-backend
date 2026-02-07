@@ -9,6 +9,23 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: "Datos incompletos" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    res.json({ message: "Usuario creado" });
+  } catch (err) {
+    res.status(500).json({ error: "Error al registrar" });
+  }
+});
     const trimmedUsername = username?.trim();
     const normalizedEmail = email?.trim().toLowerCase();
 
@@ -40,6 +57,20 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Datos incompletos" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ error: "No existe" });
+
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) return res.status(400).json({ error: "Password incorrecta" });
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
     const normalizedEmail = email?.trim().toLowerCase();
     if (!normalizedEmail || !password) {
       return res.status(400).json({ error: "Credenciales inválidas" });

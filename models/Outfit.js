@@ -15,6 +15,3 @@ const OutfitSchema = new mongoose.Schema({
 
 module.exports = mongoose.model("Outfit", OutfitSchema);
 
-
-module.exports = mongoose.model("Outfit", OutfitSchema);
-

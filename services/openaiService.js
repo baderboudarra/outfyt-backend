@@ -13,11 +13,43 @@ async function generateOutfit({ style, imagePath }) {
   try {
     // Por ahora SOLO TEXTO (seguro y estable)
     const prompt = `
-Eres un estilista profesional.
+Eres un estilista profesional y asesor de imagen.
+Analiza la intención del usuario y crea un outfit coherente con el estilo solicitado.
 El usuario quiere un outfit con estilo "${style}".
 
-Sugiere un outfit completo (top, bottom, shoes).
-Responde en JSON.
+Reglas:
+- Devuelve solo JSON válido, sin texto extra ni bloques de código.
+- Escribe en español.
+- Evita marcas específicas; usa descripciones claras y genéricas.
+- Incluye colores, materiales y silueta cuando sea relevante.
+- Asegura coherencia entre todas las piezas.
+
+Formato JSON esperado:
+{
+  "estilo": "${style}",
+  "outfit": {
+    "top": {
+      "nombre": "",
+      "descripcion": "",
+      "colores": [],
+      "materiales": []
+    },
+    "bottom": {
+      "nombre": "",
+      "descripcion": "",
+      "colores": [],
+      "materiales": []
+    },
+    "shoes": {
+      "nombre": "",
+      "descripcion": "",
+      "colores": [],
+      "materiales": []
+    },
+    "accesorios": []
+  },
+  "notas_estilista": ""
+}
 `;
 
     const response = await client.chat.completions.create({

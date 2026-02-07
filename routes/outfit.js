@@ -19,6 +19,11 @@ router.post(
         return res.status(400).json({ error: "No image provided" });
       }
 
+      const description = req.body.description?.trim();
+      if (description && description.length > 500) {
+        return res.status(400).json({ error: "Descripción demasiado larga" });
+      }
+
       const result = await cloudinary.uploader.upload(
         `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
         { folder: "outfits" }
@@ -26,7 +31,7 @@ router.post(
 
       const outfit = await Outfit.create({
         imageUrl: result.secure_url,
-        description: req.body.description,
+        description,
         user: req.userId,
       });
 
